@@ -6,6 +6,8 @@ const path = require("path");
 // mongoose 모듈
 const mongoose = require("mongoose");
 
+var cors = require("cors");
+
 // 개발 인증관련
 const config = require("./config/key.js");
 
@@ -13,8 +15,14 @@ const config = require("./config/key.js");
 const app = express();
 // 포트번호
 const port = 5000;
-// 고정된 path경로 설정
-app.use(express.static(path.join(__dirname, "../client/build/")));
+
+let corsOptions = {
+  origin: "*", // 출처 허용 옵션
+  credential: true, // 사용자 인증이 필요한 리소스(쿠키 등) 접근
+};
+app.use(cors(corsOptions));
+//  고정(Static)된 path 경로 설정
+app.use(express.static(path.join(__dirname, "./build/")));
 // 요청이 들어오면 json사용 및 url 인코딩 진행해줌
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

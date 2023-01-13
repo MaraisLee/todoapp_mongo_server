@@ -59,8 +59,19 @@ router.post("/list", (req, res) => {
     .limit(5)
     .exec()
     .then((doc) => {
-      console.log(doc);
-      res.status(200).json({ success: true, initTodo: doc });
+      // 총 카운트를 하여서 버튼 출력 여부 결정
+      Todo.count({
+        title: new RegExp(req.body.search),
+        uid: req.body.uid,
+      })
+        .then((number) => {
+          // console.log(number);
+          res.status(200).json({ success: true, initTodo: doc, total: number });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json({ success: false });
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -143,7 +154,7 @@ router.post("/userout", (req, res) => {
       // 실제 Post Model 삭제
       Todo.deleteMany({ uid: req.body.uid })
         .then(() => {
-          console.log("기록물 삭제 성공!!!");
+          // console.log("기록물 삭제 성공!!!");
           res.status(200).json({ success: true });
         })
         .catch((err) => {
